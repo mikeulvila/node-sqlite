@@ -3,6 +3,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3');
 const _ = require('lodash');
+const moment = require('moment');
 
 const PORT = 3000;
 
@@ -28,30 +29,50 @@ app.get('/invoices-per-country', (req, res) => {
 });
 
 app.get('/sales-per-year', (req, res) => {
+  // How many Invoices were there in 2009 and 2011? What are the respective total sales for each of those years?
+  //req.query = { filter: { year: '2009,2011' } }
+
+  let having = '';
+
+  if (req.query.filter) {
+    having = 'HAVING';
+
+    req.query.filter.year
+      .split(',')
+      .map(y => +y)
+      .forEach(y => {
+        having += ` year = "${y}" OR`;
+      });
+
+    having = having.substring(0, having.length - 3);
+  }
+
   db.all(`
     SELECT count(*) as invoices,
            sum(Total) as total,
-           substr(InvoiceDate, 1, 4) as year
+           strftime('%Y', InvoiceDate) as year
     FROM   Invoice
-    GROUP BY year;
-    `, (err, data) => {
-      if (err) throw err;
+    GROUP BY year
+    ${having}`,
+      (err, data) => {
+        if (err) throw err;
 
-      const roundedData = data.map(function(obj) {
-        return {
+        const roundedData = data.map(function (obj) {
+          return {
             invoices: obj.invoices,
             year: +obj.year,
             total: +obj.total.toFixed(2)
           }
-      });
+        });
 
-      res.send({
+        res.send({
           data: roundedData,
           info: '# of invoices and sales per year'
         });
-
-    })
+      }
+    );
 });
+
 
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
