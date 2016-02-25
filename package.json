@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/mikeulvila/node-sqlite#readme",
   "dependencies": {
+    "express": "^4.13.4",
     "sqlite3": "^3.1.1"
   }
 }
