@@ -1,0 +1,23 @@
+{
+  "name": "node-sqlite",
+  "version": "1.0.0",
+  "description": "working with sqlite database",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeulvila/node-sqlite.git"
+  },
+  "author": "Mike Ulvila <mikeulvila@me.com> (https://github.com/mikeulvila)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mikeulvila/node-sqlite/issues"
+  },
+  "homepage": "https://github.com/mikeulvila/node-sqlite#readme",
+  "dependencies": {
+    "sqlite3": "^3.1.1"
+  }
+}
