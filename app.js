@@ -25,7 +25,32 @@ app.get('/invoices-per-country', (req, res) => {
       });
     }
   );
+});
 
+app.get('/sales-per-year', (req, res) => {
+  db.all(`
+    SELECT count(*) as invoices,
+           sum(Total) as total,
+           substr(InvoiceDate, 1, 4) as year
+    FROM   Invoice
+    GROUP BY year;
+    `, (err, data) => {
+      if (err) throw err;
+
+      const roundedData = data.map(function(obj) {
+        return {
+            invoices: obj.invoices,
+            year: +obj.year,
+            total: +obj.total.toFixed(2)
+          }
+      });
+
+      res.send({
+          data: roundedData,
+          info: '# of invoices and sales per year'
+        });
+
+    })
 });
 
 app.listen(PORT, () => {
