@@ -2,16 +2,14 @@
 
 const express = require('express');
 const sqlite3 = require('sqlite3');
+const _ = require('lodash');
 
 const PORT = 3000;
 
 const app = express();
 const db = new sqlite3.Database('./db/chinook.sqlite');
 
-
-console.log('# of invoices per country');
-
-app.get('/', (req, res) => {
+app.get('/invoices-per-country', (req, res) => {
   db.all(`
   SELECT   COUNT(*) AS count,
            BillingCountry AS country
@@ -21,7 +19,10 @@ app.get('/', (req, res) => {
     (err, data) => {
       if (err) throw err;
 
-      res.send(data);
+      res.send({
+        data: data,
+        info: '# of invoices per country'
+      });
     }
   );
 
